@@ -111,7 +111,7 @@ import java.io.File; // import file stuff specifically (not imported by *)
 // set up filename
 String filenames[];
 String foldername = "";
-String outfolder = ".\\out";
+String outfolder = "./out";
 java.io.FilenameFilter extfilter = new java.io.FilenameFilter() { // our filename filter
   boolean accept(File dir, String name) {
     if (name.toLowerCase().endsWith("png") || name.toLowerCase().endsWith("jpeg")
@@ -156,9 +156,9 @@ void draw() {
       //println("running.");
       //println("doing a series: " + f + " of " + filenames.length + "..");
       if (f<filenames.length) {
-        img = loadImage(foldername + "\\" + filenames[f]);
+        img = loadImage(foldername + "/" + filenames[f]);
         processImage();
-        buffer.save(outfolder + "\\" + filenames[f]);
+        buffer.save(outfolder + "/" + filenames[f]);
         f++;
       } else {
         isGoTime = false;
@@ -273,6 +273,10 @@ void fileSelected(File selection) {
     frame.setResizable(false);
     selecting = false;
   }
+}
+
+void saveImage() {
+    buffer.save(outfolder + "/" + int(random(100000)) + ".png");
 }
 
 void processImage() {
@@ -932,7 +936,7 @@ class ControlFrame extends PApplet {
   int w, h, cH, cBtnW, cBoxW, cSpace, cSliderW;
   PApplet parent;
   ControlP5 cp5;
-  Button bOpen, bRun; 
+  Button bOpen, bRun, bSave; 
   public CheckBox cSeries, cCompInChromaLP, cCompOutChromaLP, cCompOutChromaLPLite, cCompOut, cChromaBlend, cSharpen, cFM, cFMNoise, cRunOnChange;
   public Slider sSAmp, sSAmpBack, sPhaseShift, sPhaseShiftOff, sCompPre, sCompPreCut, sNoise, sChromaNoise, sChromaPhaseNoise, sChromaLoss, sSharpen, sRecombine, sScanline, sFMOmega, sFMPhase, sFMLightness, sFMQuantize, sFMNoiseStart, sFMNoiseStop;
   public ButtonBar bVHS;
@@ -969,6 +973,10 @@ class ControlFrame extends PApplet {
       .addItem("Run On Change", 1)
         .setSize(cBoxW, cH)
           .setPosition(w-cBtnW, cSpace*23);
+    bSave = cp5.addButton("btnSave")
+      .setLabel("Save")
+        .setSize(cBtnW/2, cH*2)
+          .setPosition(w/2-cBtnW/4, h-cH-cSpace*2);
     bOpen = cp5.addButton("btnOpen")
       .setLabel("Open..")
         .setSize(cBtnW, cH*2)
@@ -1214,6 +1222,10 @@ class ControlFrame extends PApplet {
     if (!selecting) selectFile();
   }
 
+  public void btnSave() {
+    if (run && !isGoTime) saveImage();
+  }
+
   public void btnRun() {
     if (!isGoTime) {
       isSeries = (cSeries.getItem(0).getValue()==1.0?true:false);
@@ -1227,4 +1239,3 @@ class ControlFrame extends PApplet {
     }
   }
 }
-
